@@ -1,58 +1,147 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>AnimeSphere • Discover Your Next Obsession</title>
-    <link rel="stylesheet" href="style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Anime Finder</title>
+
+<link rel="stylesheet" href="style.css">
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+
 </head>
+
 <body>
-    <div class="container">
-        <header>
-            <div class="logo">AnimeSphere</div>
-            <button onclick="restartQuiz()" class="nav-btn">New Quiz</button>
-        </header>
 
-        <!-- Intro -->
-        <div id="intro-screen" class="screen active">
-            <div class="hero">
-                <h1>Find Your Next Favorite Anime</h1>
-                <p>Answer 20 questions about your taste.<br>We'll recommend 10 anime you'll love.</p>
-                <button id="start-btn" class="cta-btn">Start the Quiz</button>
-            </div>
-        </div>
+<div class="background"></div>
 
-        <!-- Quiz Screen -->
-        <div id="quiz-screen" class="screen">
-            <div class="progress-bar">
-                <div id="progress" class="progress"></div>
-            </div>
-            <div class="question-container">
-                <h2 id="question-text"></h2>
-                <div id="options" class="options"></div>
-            </div>
-            <div class="quiz-controls">
-                <button onclick="prevQuestion()" id="prev-btn" class="nav-btn">Previous</button>
-                <span id="question-counter">1 / 20</span>
-            </div>
-        </div>
+<div class="app">
 
-        <!-- Results -->
-        <div id="results-screen" class="screen">
-            <h1>Your Anime Taste Profile</h1>
-            <div id="taste-profile" class="taste-profile"></div>
-            
-            <h2>Recommended for You</h2>
-            <div id="recommendations" class="recommendations-grid"></div>
-            
-            <div class="actions">
-                <button onclick="restartQuiz()" class="cta-btn">Take Quiz Again</button>
-                <button onclick="shareResults()" class="secondary-btn">Share Results</button>
-            </div>
-        </div>
-    </div>
+<div class="card">
 
-    <script src="script.js"></script>
+<h1>🎌 Anime Finder</h1>
+
+<p class="subtitle">
+Answer 20 questions and discover your next favorite anime.
+</p>
+
+<div id="progressContainer">
+
+<div id="progressBar"></div>
+
+</div>
+
+<div id="progressText">
+
+Question 1 / 20
+
+</div>
+
+<div id="quiz">
+
+<h2 id="question">
+
+Loading...
+
+</h2>
+
+<div id="answers">
+
+</div>
+
+</div>
+
+<div id="result" class="hidden">
+
+<h2>Your Anime Taste</h2>
+
+<div class="tasteCard">
+
+<div class="tasteRow">
+
+<span>⚔️ Action</span>
+
+<div class="meter">
+
+<div id="actionMeter"></div>
+
+</div>
+
+</div>
+
+<div class="tasteRow">
+
+<span>😂 Comedy</span>
+
+<div class="meter">
+
+<div id="comedyMeter"></div>
+
+</div>
+
+</div>
+
+<div class="tasteRow">
+
+<span>❤️ Romance</span>
+
+<div class="meter">
+
+<div id="romanceMeter"></div>
+
+</div>
+
+</div>
+
+<div class="tasteRow">
+
+<span>🧠 Psychological</span>
+
+<div class="meter">
+
+<div id="mindMeter"></div>
+
+</div>
+
+</div>
+
+<div class="tasteRow">
+
+<span>✨ Fantasy</span>
+
+<div class="meter">
+
+<div id="fantasyMeter"></div>
+
+</div>
+
+</div>
+
+</div>
+
+<h3 id="personality">
+
+The Tactical Warrior
+
+</h3>
+
+<div id="recommendations">
+
+</div>
+
+<button id="restartButton">
+
+Take Quiz Again
+
+</button>
+
+</div>
+
+</div>
+
+</div>
+
+<script src="script.js"></script>
+
 </body>
 </html>

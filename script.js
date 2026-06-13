@@ -510,7 +510,7 @@ function personalityName() {
 
 const cache = new Map();
 
-async function fetchAnime(query) {
+async function fetchAnime(genre) {
   const res = await fetch("https://graphql.anilist.co", {
     method: "POST",
     headers: {
@@ -518,9 +518,13 @@ async function fetchAnime(query) {
     },
     body: JSON.stringify({
       query: `
-        query ($search: String) {
-          Page(perPage: 10) {
-            media(search: $search, type: ANIME) {
+        query ($genre: String) {
+          Page(perPage: 20) {
+            media(
+              type: ANIME
+              genre: $genre
+              sort: SCORE_DESC
+            ) {
               title {
                 romaji
               }
@@ -534,17 +538,19 @@ async function fetchAnime(query) {
           }
         }
       `,
-      variables: { search: query }
+      variables: {
+        genre: genre
+      }
     })
   });
 
-const data = await res.json();
+  const data = await res.json();
 
-if (!data?.data?.Page?.media) {
-  return [];
-}
+  if (!data?.data?.Page?.media) {
+    return [];
+  }
 
-return data.data.Page.media;
+  return data.data.Page.media;
 }
 /* =========================
    QUERY BUILDER
@@ -553,15 +559,15 @@ return data.data.Page.media;
 function buildQueries(t) {
   let q = [];
 
-  if (t.action > 5) q.push("action");
-  if (t.mind > 5) q.push("psychological");
-  if (t.romance > 5) q.push("romance");
-  if (t.fantasy > 5) q.push("fantasy");
-  if (t.sciFi > 5) q.push("sci-fi");
-  if (t.horror > 5) q.push("horror");
-  if (t.mystery > 5) q.push("mystery");
+  if (t.action > 5) q.push("Action");
+  if (t.mind > 5) q.push("Psychological");
+  if (t.romance > 5) q.push("Romance");
+  if (t.fantasy > 5) q.push("Fantasy");
+  if (t.sciFi > 5) q.push("Sci-Fi");
+  if (t.horror > 5) q.push("Horror");
+  if (t.mystery > 5) q.push("Mystery");
 
-  return q.length ? q : ["popular"];
+  return q.length ? q : ["Action"];
 }
 
 /* =========================

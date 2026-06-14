@@ -359,6 +359,38 @@ transform:scale(1.02);
 
 }
 
+/* AniList Button */
+
+.animeBtn{
+
+display:inline-block;
+
+margin-top:10px;
+
+padding:8px 14px;
+
+background:#ff4d6d;
+
+color:white;
+
+text-decoration:none;
+
+border-radius:8px;
+
+font-weight:bold;
+
+transition:.3s;
+
+}
+
+.animeBtn:hover{
+
+opacity:.9;
+
+transform:translateY(-2px);
+
+}
+
 @media(max-width:700px){
 
 .card{

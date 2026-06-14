@@ -440,7 +440,7 @@ function generateQuestions() {
   let pool = [...questionPool];
   questions = [];
 
- for (let i = 0; i < 40 && pool.length > 0; i++) {
+ for (let i = 0; i < 20 && pool.length > 0; i++) {
     const idx = Math.floor(Math.random() * pool.length);
    const question = pool.splice(idx, 1)[0];
 
@@ -527,27 +527,30 @@ async function fetchAnime(genre) {
       "Content-Type": "application/json"
     },
     body: JSON.stringify({
-      query: `
-        query ($genre: String) {
-          Page(perPage: 50) {
-            media(
-              type: ANIME
-              genre: $genre
-              sort: SCORE_DESC
-            ) {
-              title {
-                romaji
-              }
-              description
-              genres
-              averageScore
-              coverImage {
-                large
-              }
-            }
-          }
+     query: `
+  query ($genre: String) {
+    Page(perPage: 100) {
+      media(
+        type: ANIME
+        genre: $genre
+        sort: SCORE_DESC
+        isAdult: false
+        format_in: [TV]
+      ) {
+        id
+        title {
+          romaji
         }
-      `,
+        description
+        genres
+        averageScore
+        coverImage {
+          large
+        }
+      }
+    }
+  }
+`,
       variables: {
         genre: genre
       }
@@ -658,19 +661,30 @@ async function recommendAnime() {
     all.push(...result);
   }
 
-  const unique = [...new Map(
-  all.map(a => {
+  const animeMap = new Map();
 
-    let baseTitle = a.title.romaji
-      .replace(/season\s*\d+/gi, "")
-      .replace(/final season/gi, "")
-      .replace(/part\s*\d+/gi, "")
-      .replace(/movie/gi, "")
-      .trim();
+all.forEach(a => {
 
-    return [baseTitle, a];
-  })
-).values()];
+  let key = a.title.romaji
+    .toLowerCase()
+    .replace(/season\s*\d+/gi, "")
+    .replace(/the final season/gi, "")
+    .replace(/final season/gi, "")
+    .replace(/part\s*\d+/gi, "")
+    .replace(/movie/gi, "")
+    .replace(/[:\-]/g, "")
+    .trim();
+
+  if (
+    !animeMap.has(key) ||
+    (a.averageScore || 0) >
+      (animeMap.get(key).averageScore || 0)
+  ) {
+    animeMap.set(key, a);
+  }
+});
+
+const unique = [...animeMap.values()];
 
 const ranked = unique.map(a => ({
   title: a.title.romaji,

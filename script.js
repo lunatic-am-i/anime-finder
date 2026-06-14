@@ -533,7 +533,7 @@ async function fetchAnime(genre) {
       media(
         type: ANIME
         genre: $genre
-        sort: SCORE_DESC
+        sort: POPULARITY_DESC
         isAdult: false
         format_in: [TV]
       ) {
@@ -661,20 +661,25 @@ async function recommendAnime() {
     all.push(...result);
   }
 
-  const animeMap = new Map();
+const animeMap = new Map();
 
 all.forEach(a => {
 
-  let key = a.title.romaji
+  let title = a.title.romaji || "";
+
+  let key = title
     .toLowerCase()
     .replace(/season\s*\d+/gi, "")
-    .replace(/the final season/gi, "")
     .replace(/final season/gi, "")
+    .replace(/the final season/gi, "")
     .replace(/part\s*\d+/gi, "")
     .replace(/movie/gi, "")
+    .replace(/ova/gi, "")
+    .replace(/special/gi, "")
     .replace(/[:\-]/g, "")
     .trim();
 
+  // keep only highest scored version
   if (
     !animeMap.has(key) ||
     (a.averageScore || 0) >
@@ -686,7 +691,25 @@ all.forEach(a => {
 
 const unique = [...animeMap.values()];
 
-const ranked = unique.map(a => ({
+   const franchiseSet = new Set();
+
+const franchiseUnique = unique.filter(anime => {
+
+  let franchise = anime.title.romaji
+    .toLowerCase()
+    .split(":")[0]
+    .trim();
+
+  if (franchiseSet.has(franchise)) {
+    return false;
+  }
+
+  franchiseSet.add(franchise);
+  return true;
+});
+
+const ranked = franchiseUnique.map(a => ({
+   
   title: a.title.romaji,
   image: a.coverImage.large,
   description: (a.description || "")

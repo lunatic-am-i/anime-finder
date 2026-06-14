@@ -491,15 +491,22 @@ function showQuestion() {
 ========================= */
 
 function personalityName() {
-  let t = taste;
+  const highest = Object.entries(taste)
+    .sort((a, b) => b[1] - a[1])[0][0];
 
-  if ((t.action || 0) > 10) return "⚔️ Battle Junkie";
-  if ((t.mind || 0) > 10) return "🧠 Deep Thinker";
-  if ((t.emotional || 0) > 10) return "💔 Emotional Soul";
-  if ((t.comedy || 0) > 10) return "😂 Chaos Lover";
-  if ((t.fantasy || 0) > 10) return "✨ Dream Explorer";
+  const names = {
+    action: "⚔️ Battle Junkie",
+    mind: "🧠 Deep Thinker",
+    emotional: "💔 Emotional Soul",
+    comedy: "😂 Chaos Lover",
+    fantasy: "✨ Dream Explorer",
+    romance: "❤️ Romantic Dreamer",
+    thriller: "🔥 Thrill Seeker",
+    mystery: "🕵️ Mystery Hunter",
+    wholesome: "🌸 Comfort Seeker"
+  };
 
-  return "🌌 Balanced Watcher";
+  return names[highest] || "🌌 Balanced Watcher";
 }
 
  

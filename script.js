@@ -440,7 +440,7 @@ function generateQuestions() {
   let pool = [...questionPool];
   questions = [];
 
-  for (let i = 0; i < 20 && pool.length > 0; i++) {
+ for (let i = 0; i < 40 && pool.length > 0; i++) {
     const idx = Math.floor(Math.random() * pool.length);
    const question = pool.splice(idx, 1)[0];
 
@@ -519,7 +519,6 @@ function personalityName() {
    API (FIXED + RETRY + CACHE)
 ========================= */
 
-const cache = new Map();
 
 async function fetchAnime(genre) {
   const res = await fetch("https://graphql.anilist.co", {
@@ -568,8 +567,7 @@ async function fetchAnime(genre) {
 ========================= */
 
 function buildQueries(t) {
-
-  return Object.entries({
+  const genres = {
     action: "Action",
     romance: "Romance",
     fantasy: "Fantasy",
@@ -579,12 +577,16 @@ function buildQueries(t) {
     comedy: "Comedy",
     adventure: "Adventure",
     psychological: "Psychological",
-    thriller: "Thriller"
-  })
-    .sort((a, b) => t[b[0]] - t[a[0]])
-    .slice(0, 3)
-    .map(x => x[1]);
+    thriller: "Thriller",
+    emotional: "Drama",
+    wholesome: "Slice of Life",
+    sliceOfLife: "Slice of Life"
+  };
 
+  return Object.keys(genres)
+    .sort((a, b) => (t[b] || 0) - (t[a] || 0))
+    .slice(0, 5)
+    .map(key => genres[key]);
 }
 
 /* =========================
@@ -613,7 +615,7 @@ if (genres.includes("drama"))
 if (genres.includes("psychological"))
   score += (t.psychological || 0) * 2;
   
-   score += rating / 5;
+   score += rating / 2;
 
    return score;
 }
@@ -626,12 +628,14 @@ function explain(anime, t) {
   let g = (anime.genres || []).map(x => x.toLowerCase());
   let reasons = [];
 
-  if (g.includes("action") && t.action > 3) reasons.push("action match");
-  if (g.includes("romance") && t.romance > 3) reasons.push("romance match");
-  if (g.includes("psychological") && t.mind > 3) reasons.push("mind match");
-  if (g.includes("fantasy") && t.fantasy > 3) reasons.push("fantasy match");
+  if (g.includes("action")) reasons.push("high action");
+  if (g.includes("romance")) reasons.push("strong romance");
+  if (g.includes("drama")) reasons.push("emotional story");
+  if (g.includes("psychological")) reasons.push("mind games");
+  if (g.includes("fantasy")) reasons.push("fantasy world");
+  if (g.includes("mystery")) reasons.push("mystery elements");
 
-  return reasons.join(", ") || "general match";
+  return reasons.slice(0, 3).join(" • ");
 }
 
 /* =========================
@@ -640,7 +644,11 @@ function explain(anime, t) {
 
 async function recommendAnime() {
   const container = document.getElementById("recommendations");
-  container.innerHTML = "Finding anime for your taste...";
+  container.innerHTML = `
+<div class="loading">
+🎌 Analyzing your anime personality...
+</div>
+`;
 
  const queries = buildQueries(taste);
   let all = [];
@@ -670,6 +678,7 @@ const ranked = unique.map(a => ({
   description: (a.description || "")
     .replace(/<[^>]*>/g, "")
     .slice(0, 120),
+   rating: a.averageScore || 0,
   score: calculateScore(a, taste),
   why: explain(a, taste)
 }));
@@ -690,14 +699,21 @@ function showResults(list) {
     const div = document.createElement("div");
     div.className = "animeCard";
 
-    div.innerHTML = `
-      <img src="${a.image}" style="width:100%;border-radius:10px;">
-      <h3>${a.title}</h3>
-      <p>${a.description}</p>
-      <p><strong>Match: ${Math.min(100, Math.floor(a.score * 10))}%</strong></p>
-      <p style="font-size:12px;color:gray;">Why: ${a.why}</p>
-    `;
+  div.innerHTML = `
+  <img src="${a.image}" style="width:100%;border-radius:10px;">
+  <h3>${a.title}</h3>
+  <p>${a.description}</p>
+  <p><strong>Match: ${Math.min(100, Math.floor(a.score * 10))}%</strong></p>
+  <p style="font-size:12px;color:gray;">Why: ${a.why}</p>
 
+  <a
+    href="https://anilist.co/search/anime?search=${encodeURIComponent(a.title)}"
+    target="_blank"
+    class="animeBtn"
+  >
+    View on AniList
+  </a>
+`;
     container.appendChild(div);
   });
 }
@@ -727,8 +743,11 @@ document.getElementById("restartButton").onclick = () => {
   resultEl.classList.add("hidden");
   quizEl.classList.remove("hidden");
 
-  generateQuestions();
-  showQuestion();
+ generateQuestions();
+
+questions.sort(() => Math.random() - 0.5);
+
+showQuestion();
 };
 
 /* =========================

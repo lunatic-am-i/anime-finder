@@ -529,7 +529,7 @@ async function fetchAnime(genre) {
     body: JSON.stringify({
      query: `
   query ($genre: String) {
-    Page(perPage: 100) {
+    Page(perPage: 200) {
       media(
         type: ANIME
         genre: $genre
@@ -697,7 +697,18 @@ const franchiseUnique = unique.filter(anime => {
 
   let franchise = anime.title.romaji
     .toLowerCase()
+
+    // remove season indicators
+    .replace(/season\s*\d+/gi, "")
+    .replace(/final season/gi, "")
+    .replace(/the final season/gi, "")
+    .replace(/part\s*\d+/gi, "")
+
+    // remove subtitles after :
     .split(":")[0]
+
+    // remove punctuation
+    .replace(/[^\w\s]/g, "")
     .trim();
 
   if (franchiseSet.has(franchise)) {
@@ -707,7 +718,7 @@ const franchiseUnique = unique.filter(anime => {
   franchiseSet.add(franchise);
   return true;
 });
-
+   
 const ranked = franchiseUnique.map(a => ({
    
   title: a.title.romaji,
@@ -720,9 +731,31 @@ const ranked = franchiseUnique.map(a => ({
   why: explain(a, taste)
 }));
 
-  ranked.sort((a, b) => b.score - a.score);
+ ranked.sort((a, b) => b.score - a.score);
 
-  showResults(ranked.slice(0, 10));
+const finalList = [];
+const usedTitles = new Set();
+
+for (const anime of ranked) {
+
+  const baseTitle = anime.title
+    .toLowerCase()
+    .replace(/season\s*\d+/gi, "")
+    .replace(/part\s*\d+/gi, "")
+    .replace(/final season/gi, "")
+    .split(":")[0]
+    .trim();
+
+  if (!usedTitles.has(baseTitle)) {
+    usedTitles.add(baseTitle);
+    finalList.push(anime);
+  }
+
+  if (finalList.length === 10) break;
+}
+
+showResults(finalList);
+   
 }
 /* =========================
    SHOW RESULTS

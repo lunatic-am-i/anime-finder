@@ -535,7 +535,7 @@ async function fetchAnime(genre) {
         genre: $genre
         sort: POPULARITY_DESC
         isAdult: false
-        format_in: [TV]
+       format_in: [TV, MOVIE]
       ) {
         id
         title {

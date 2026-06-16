@@ -734,7 +734,7 @@ const ranked = franchiseUnique.map(a => ({
  score:
   calculateScore(a, taste) +
   (a.averageScore || 0) * 0.5 +
-  Math.random() * 5
+  Math.random() * 5,
   why: explain(a, taste)
 }));
 

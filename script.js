@@ -444,7 +444,10 @@ function generateQuestions() {
     const idx = Math.floor(Math.random() * pool.length);
    const question = pool.splice(idx, 1)[0];
 
-question.answers.sort(() => Math.random() - 0.5);
+question.answers = question.answers
+  .map(v => ({ v, sort: Math.random() }))
+  .sort((a,b) => a.sort - b.sort)
+  .map(({v}) => v);
 
 questions.push(question);
   }
@@ -529,7 +532,7 @@ async function fetchAnime(genre) {
     body: JSON.stringify({
      query: `
   query ($genre: String) {
-    Page(perPage: 200) {
+    Page(perPage: 500) {
       media(
         type: ANIME
         genre: $genre
@@ -588,7 +591,7 @@ function buildQueries(t) {
 
   return Object.keys(genres)
     .sort((a, b) => (t[b] || 0) - (t[a] || 0))
-    .slice(0, 5)
+    .slice(0, 8)
     .map(key => genres[key]);
 }
 
@@ -728,7 +731,10 @@ const ranked = franchiseUnique.map(a => ({
     .replace(/<[^>]*>/g, "")
     .slice(0, 120),
    rating: a.averageScore || 0,
-  score: calculateScore(a, taste),
+ score:
+  calculateScore(a, taste) +
+  (a.averageScore || 0) * 0.5 +
+  Math.random() * 5
   why: explain(a, taste)
 }));
 
@@ -773,8 +779,9 @@ function showResults(list) {
   div.innerHTML = `
   <img src="${a.image}" style="width:100%;border-radius:10px;">
   <h3>${a.title}</h3>
-  <p>${a.description}</p>
-  <p><strong>Match: ${Math.min(100, Math.floor(a.score * 10))}%</strong></p>
+ <p>${a.description}</p>
+<p>⭐ AniList Score: ${a.rating}</p>
+  <p><strong>Match: ${Math.min(99, Math.floor((a.score / ranked[0].score) * 100))}%</strong></p>
   <p style="font-size:12px;color:gray;">Why: ${a.why}</p>
 
   <a

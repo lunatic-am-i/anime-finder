@@ -583,7 +583,7 @@ function buildQueries(t) {
     comedy: "Comedy",
     adventure: "Adventure",
     psychological: "Psychological",
-    thriller: "Thriller",
+   thriller: "Mystery",
     emotional: "Drama",
     wholesome: "Slice of Life",
     sliceOfLife: "Slice of Life"
@@ -753,13 +753,21 @@ for (const anime of ranked) {
     .split(":")[0]
     .trim();
 
-  if (!usedTitles.has(baseTitle)) {
-    usedTitles.add(baseTitle);
-    finalList.push(anime);
-  }
+ if (!usedTitles.has(baseTitle)) {
+  usedTitles.add(baseTitle);
+
+  anime.matchPercent = Math.min(
+    99,
+    Math.floor((anime.score / (ranked[0]?.score || 1)) * 100)
+  );
+
+  finalList.push(anime);
+}
 
   if (finalList.length === 10) break;
 }
+
+console.log("Recommendations:", finalList);
 
 showResults(finalList);
    
@@ -781,7 +789,7 @@ function showResults(list) {
   <h3>${a.title}</h3>
  <p>${a.description}</p>
 <p>⭐ AniList Score: ${a.rating}</p>
-  <p><strong>Match: ${Math.min(99, Math.floor((a.score / ranked[0].score) * 100))}%</strong></p>
+  <p><strong>Match: ${a.matchPercent || 95}%</strong></p>
   <p style="font-size:12px;color:gray;">Why: ${a.why}</p>
 
   <a

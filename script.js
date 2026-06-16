@@ -618,7 +618,7 @@ if (genres.includes("drama"))
 if (genres.includes("psychological"))
   score += (t.psychological || 0) * 2;
   
-   score += rating / 2;
+   score += rating / 5;
 
    return score;
 }
@@ -656,10 +656,11 @@ async function recommendAnime() {
  const queries = buildQueries(taste);
   let all = [];
 
-  for (let q of queries) {
-    const result = await fetchAnime(q);
-    all.push(...result);
-  }
+ const results = await Promise.all(
+  queries.map(q => fetchAnime(q))
+);
+
+results.forEach(r => all.push(...r));
 
 const animeMap = new Map();
 

@@ -547,6 +547,7 @@ async function fetchAnime(genre) {
         description
         genres
         averageScore
+        popularity
         coverImage {
           large
         }
@@ -621,7 +622,18 @@ if (genres.includes("drama"))
 if (genres.includes("psychological"))
   score += (t.psychological || 0) * 2;
   
-   score += rating / 5;
+   score += rating / 6;
+
+const popularity = anime.popularity || 0;
+
+if (popularity > 300000)
+    score -= 25;
+
+if (popularity < 50000)
+    score += 12;
+
+if (popularity < 10000)
+    score += 18;
 
    return score;
 }
@@ -731,19 +743,27 @@ const ranked = franchiseUnique.map(a => ({
     .replace(/<[^>]*>/g, "")
     .slice(0, 120),
    rating: a.averageScore || 0,
- score:
+score:
   calculateScore(a, taste) +
-  (a.averageScore || 0) * 0.5 +
-  Math.random() * 5,
+  (a.averageScore || 0) * 0.3,
   why: explain(a, taste)
 }));
 
  ranked.sort((a, b) => b.score - a.score);
 
+// Sort by best match
+ranked.sort((a, b) => b.score - a.score);
+
+// Keep only the top 30 best matches
+const candidatePool = ranked.slice(0, 30);
+
+// Shuffle only those top matches
+candidatePool.sort(() => Math.random() - 0.5);
+
 const finalList = [];
 const usedTitles = new Set();
 
-for (const anime of ranked) {
+for (const anime of candidatePool) {
 
   const baseTitle = anime.title
     .toLowerCase()
@@ -753,20 +773,20 @@ for (const anime of ranked) {
     .split(":")[0]
     .trim();
 
- if (!usedTitles.has(baseTitle)) {
-  usedTitles.add(baseTitle);
+  if (!usedTitles.has(baseTitle)) {
 
-  anime.matchPercent = Math.min(
-    99,
-    Math.floor((anime.score / (ranked[0]?.score || 1)) * 100)
-  );
+    usedTitles.add(baseTitle);
 
-  finalList.push(anime);
-}
+    anime.matchPercent = Math.min(
+      99,
+      Math.floor((anime.score / ranked[0].score) * 100)
+    );
+
+    finalList.push(anime);
+  }
 
   if (finalList.length === 10) break;
 }
-
 console.log("Recommendations:", finalList);
 
 showResults(finalList);

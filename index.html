@@ -1,40 +1,147 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Anime Finder</title>
-    <link rel="stylesheet" href="style.css" />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,600;14..32,700&display=swap" rel="stylesheet" />
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Anime Finder</title>
+
+<link rel="stylesheet" href="style.css">
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+
 </head>
+
 <body>
-    <div class="bg"></div>
-    <main>
-        <div class="card">
-            <header>
-                <h1>🎌 Anime Finder</h1>
-                <p>Answer 20 questions and discover your next favorite anime.</p>
-            </header>
 
-            <div class="progress-wrap">
-                <div class="progress-bar" id="progressBar"></div>
-                <span class="progress-text" id="progressText">1 / 20</span>
-            </div>
+<div class="background"></div>
 
-            <section id="quiz">
-                <h2 id="question">Loading…</h2>
-                <div class="grid" id="answers"></div>
-            </section>
+<div class="app">
 
-            <section id="result" class="hidden">
-                <h2>Your Anime Taste</h2>
-                <div class="taste-grid" id="tasteGrid"></div>
-                <h3 id="personality">The Tactical Warrior</h3>
-                <div id="recommendations" class="rec-grid"></div>
-                <button id="restartBtn">🔄 Take Quiz Again</button>
-            </section>
-        </div>
-    </main>
-    <script src="script.js"></script>
+<div class="card">
+
+<h1>🎌 Anime Finder</h1>
+
+<p class="subtitle">
+Answer 20 questions and discover your next favorite anime.
+</p>
+
+<div id="progressContainer">
+
+<div id="progressBar"></div>
+
+</div>
+
+<div id="progressText">
+
+Question 1 / 20
+
+</div>
+
+<div id="quiz">
+
+<h2 id="question">
+
+Loading...
+
+</h2>
+
+<div id="answers">
+
+</div>
+
+</div>
+
+<div id="result" class="hidden">
+
+<h2>Your Anime Taste</h2>
+
+<div class="tasteCard">
+
+<div class="tasteRow">
+
+<span>⚔️ Action</span>
+
+<div class="meter">
+
+<div id="actionMeter"></div>
+
+</div>
+
+</div>
+
+<div class="tasteRow">
+
+<span>😂 Comedy</span>
+
+<div class="meter">
+
+<div id="comedyMeter"></div>
+
+</div>
+
+</div>
+
+<div class="tasteRow">
+
+<span>❤️ Romance</span>
+
+<div class="meter">
+
+<div id="romanceMeter"></div>
+
+</div>
+
+</div>
+
+<div class="tasteRow">
+
+<span>🧠 Psychological</span>
+
+<div class="meter">
+
+<div id="mindMeter"></div>
+
+</div>
+
+</div>
+
+<div class="tasteRow">
+
+<span>✨ Fantasy</span>
+
+<div class="meter">
+
+<div id="fantasyMeter"></div>
+
+</div>
+
+</div>
+
+</div>
+
+<h3 id="personality">
+
+The Tactical Warrior
+
+</h3>
+
+<div id="recommendations">
+
+</div>
+
+<button id="restartButton">
+
+Take Quiz Again
+
+</button>
+
+</div>
+
+</div>
+
+</div>
+
+<script src="script.js"></script>
+
 </body>
 </html>
